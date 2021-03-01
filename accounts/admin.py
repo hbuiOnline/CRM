@@ -7,3 +7,4 @@ from .models import  * # To import all the model from .models, then specify thos
 admin.site.register(Customer)
 admin.site.register(Product)
 admin.site.register(Order)
+admin.site.register(Tag)
