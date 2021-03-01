@@ -14,6 +14,16 @@
                     <th>Product</th>
                     <th>Category</th>
                     <th>Price</th>
+
+                    
+                    {% for i in products %} <!--products is passed from the views.py-->
+                        <tr>
+                            <td>{{i.name}}</td>
+                            <td>{{i.category}}</td>
+                            <td>{{i.price}}</td>
+                        </tr>
+                    {% endfor %}
+                        
                 </tr>
             </table>
         </div>

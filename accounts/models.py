@@ -28,7 +28,7 @@ class Product(models.Model):
     price = models.FloatField(null=True)
     category = models.CharField(max_length=200, null=True, choices=CATEGORY)
     description = models.CharField(max_length=200, null=True, blank=True) #blank=True similar to null=True, but null=True is for form
-    date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
     tag = models.ManyToManyField(Tag)
 
     def __str__(self):
