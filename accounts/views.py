@@ -31,8 +31,13 @@ def products(request):
 
     return render(request, 'accounts/products.html', context)
 
-def customer(request):
-    return render(request, 'accounts/customer.html')
+def customer(request, pk): #make the url dynamic using pk as the param
+    customer = Customer.objects.get(id=pk)
+    orders = customer.order_set.all() #grabing al the orders from the child subfield
+    order_count = orders.count()
+
+    context = {'customer': customer, 'orders': orders, 'order_count': order_count}
+    return render(request, 'accounts/customer.html', context)
 
 
 
