@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.forms import inlineformset_factory
 
 # Create your views here.
 from .models import *
@@ -43,8 +44,11 @@ def customer(request, pk): #make the url dynamic using pk as the param
 
 
 #CRUD
-def createOrder(request):
-    form = OrderForm()
+def createOrder(request, pk):
+    # OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status')) #Parent model, Child model
+    customer = Customer.objects.get(id=pk)
+    # formset = OrderFormSet(instance=customer)
+    form = OrderForm(initial={'customer': customer}) #initial will let prefil value into the form
     if request.method == 'POST':
         #print('Printing POST:', request.POST)
         form = OrderForm(request.POST)
@@ -53,6 +57,7 @@ def createOrder(request):
             return redirect('/') #sending back to dashboard template
 
     context = {'form': form}
+    # context = {'formset': formset}
     return render(request, 'accounts/order_form.html', context)
 
 
