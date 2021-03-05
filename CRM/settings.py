@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'accounts', #adding an app to our project so django know this folder within it
+
+    'django_filters',
 ]
 
 MIDDLEWARE = [
