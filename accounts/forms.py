@@ -1,4 +1,7 @@
 from django.forms import ModelForm
+from django.contrib.auth.forms import UserCreationForm
+from django import forms
+from django.contrib.auth.models import User #import User model
 from .models import Order
 
 class OrderForm(ModelForm): #create form from the model
@@ -8,4 +11,7 @@ class OrderForm(ModelForm): #create form from the model
         # fields = ['customer', 'products']
 
 
-        
+class CreateUserForm(UserCreationForm): #inherited the UserCreationForm, replicate it customize the field
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2'] #this will give the form of only these fields

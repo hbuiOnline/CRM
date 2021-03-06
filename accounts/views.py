@@ -1,12 +1,65 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm
+
+from django.contrib.auth import authenticate, login, logout
+
+from django.contrib import messages
+
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 from .models import *
-from .forms import OrderForm
+from .forms import OrderForm, CreateUserForm
 from .filters import OrderFilter
 
+def registerPage(request):
+    if request.user.is_authenticated: #this is a property
+        return redirect('home')
+
+    else:
+        form = CreateUserForm()
+        if request.method == 'POST':
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                form.save()
+                user = form.cleaned_data.get('username') #get the username
+                messages.success(request, 'Account was created for ' + user)
+                return redirect('login')
+
+        context = {'form': form}
+        return render(request, 'accounts/register.html', context)
+
+def loginPage(request):
+    if request.user.is_authenticated: #this is a property
+        return redirect('home')
+    
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('username') #grab the value of these fields
+            password = request.POST.get('password') #these two are from the name= in HTML template
+
+            user = authenticate(request, username=username, password=password) #authenticate
+
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+
+            else:
+                messages.info(request, 'Username OR password is Incorrect')
+                
+
+        context = {}
+        return render(request, 'accounts/login.html', context)    
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
+
+
+@login_required(login_url='login') #if user is not login, send it to the login page
 def home(request):
     orders = Order.objects.all()
     customers = Customer.objects.all()
@@ -27,6 +80,9 @@ def home(request):
 
     return render(request, 'accounts/dashboard.html', context)
 
+
+
+@login_required(login_url='login') #if user is not login, send it to the login page
 def products(request):
     products = Product.objects.all() #Query all the products in the database
 
@@ -34,6 +90,9 @@ def products(request):
 
     return render(request, 'accounts/products.html', context)
 
+
+
+@login_required(login_url='login') #if user is not login, send it to the login page
 def customer(request, pk): #make the url dynamic using pk as the param
     customer = Customer.objects.get(id=pk)
     orders = customer.order_set.all() #grabing al the orders from the child subfield
@@ -49,6 +108,7 @@ def customer(request, pk): #make the url dynamic using pk as the param
 
 
 #CRUD
+@login_required(login_url='login') #if user is not login, send it to the login page
 def createOrder(request, pk):
     # OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status')) #Parent model, Child model
     customer = Customer.objects.get(id=pk)
@@ -66,6 +126,8 @@ def createOrder(request, pk):
     return render(request, 'accounts/order_form.html', context)
 
 
+
+@login_required(login_url='login') #if user is not login, send it to the login page
 def updateOrder(request, pk):
 
     order = Order.objects.get(id=pk) #getting data from the form
@@ -80,6 +142,9 @@ def updateOrder(request, pk):
     return render(request, 'accounts/order_form.html', context)
 
 
+
+
+@login_required(login_url='login') #if user is not login, send it to the login page
 def deleteOrder(request, pk):
     order = Order.objects.get(id=pk)
     if request.method == 'POST':
