@@ -29,6 +29,9 @@ def registerPage(request):
             # This will let create group on registration
             group = Group.objects.get(name='customer')
             user.groups.add(group)
+            Customer.objects.create(
+                user=user,  # create user associated with customer
+            )
 
             messages.success(request, 'Account was created for ' + username)
             return redirect('login')
@@ -64,9 +67,20 @@ def logoutUser(request):
     return redirect('login')
 
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
 def userPage(request):
+    # allow us to grab all the order of that customer
+    orders = request.user.customer.order_set.all()
 
-    context = {}
+    total_orders = orders.count()
+    delivered = orders.filter(status='Delivered').count()
+    pending = orders.filter(status='Pending').count()
+
+    print('ORDERS: ', orders)
+
+    context = {'orders': orders,  'total_orders': total_orders,
+               'delivered': delivered, 'pending': pending}
     return render(request, 'accounts/user.html', context)
 
 
