@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'accounts', #adding an app to our project so django know this folder within it
+    'accounts',  # adding an app to our project so django know this folder within it
 
     'django_filters',
 ]
@@ -123,8 +128,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/images/' #For images & videos
+MEDIA_URL = '/images/'  # For images & videos
 
-STATICFILES_DIRS = [ #This is for linking the static folder into django app for static file such as css, js, images
+STATICFILES_DIRS = [  # This is for linking the static folder into django app for static file such as css, js, images
     BASE_DIR / "static"
 ]
+
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+MEDIA_ROOT = BASE_DIR / "static/images"
